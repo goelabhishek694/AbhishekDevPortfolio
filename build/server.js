@@ -11,6 +11,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy - REQUIRED for Railway, Heroku, etc.
+app.set('trust proxy', 1);
+
 // Template utility functions
 const loadTemplate = (templateName, format = 'html') => {
     const templatePath = path.join(__dirname, 'templates', 'emails', `${templateName}.${format}`);
@@ -59,27 +62,47 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Email configuration
+// Email configuration with improved error handling
 const createTransporter = () => {
-    // Check if we're using Gmail or custom SMTP
+    const emailUser = process.env.EMAIL_USER || 'abhishek.dev694@gmail.com';
+    const emailPassword = process.env.EMAIL_PASSWORD;
+    
+    if (!emailPassword) {
+        console.error('❌ EMAIL_PASSWORD environment variable is missing!');
+        throw new Error('Email configuration incomplete');
+    }
+
+    // Enhanced Gmail configuration for production
     if (process.env.EMAIL_SERVICE === 'gmail') {
         return nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USER || 'abhishek.dev694@gmail.com',
-                pass: process.env.EMAIL_PASSWORD // App-specific password for Gmail
-            }
+                user: emailUser,
+                pass: emailPassword
+            },
+            // Production-friendly timeout settings
+            connectionTimeout: 60000, // 60 seconds
+            greetingTimeout: 30000,   // 30 seconds
+            socketTimeout: 60000,     // 60 seconds
         });
     } else {
-        // Custom SMTP configuration
+        // Enhanced SMTP configuration for production
         return nodemailer.createTransport({
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: process.env.SMTP_PORT || 587,
+            port: parseInt(process.env.SMTP_PORT) || 587,
             secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.EMAIL_USER || 'abhishek.dev694@gmail.com',
-                pass: process.env.EMAIL_PASSWORD
-            }
+                user: emailUser,
+                pass: emailPassword
+            },
+            // Production-friendly settings
+            connectionTimeout: 60000,
+            greetingTimeout: 30000,
+            socketTimeout: 60000,
+            // Additional settings for better reliability
+            pool: true,
+            maxConnections: 5,
+            maxMessages: 100,
         });
     }
 };
@@ -115,11 +138,23 @@ app.post('/api/contact', emailLimiter, async (req, res) => {
             });
         }
 
-        // Create transporter
+        // Create transporter with error handling
+        console.log('🔧 Creating email transporter...');
         const transporter = createTransporter();
 
-        // Verify transporter configuration
-        await transporter.verify();
+        // Verify transporter configuration with detailed logging
+        console.log('🔍 Verifying SMTP connection...');
+        try {
+            await transporter.verify();
+            console.log('✅ SMTP connection verified successfully');
+        } catch (verifyError) {
+            console.error('❌ SMTP verification failed:', {
+                message: verifyError.message,
+                code: verifyError.code,
+                command: verifyError.command
+            });
+            throw verifyError;
+        }
 
         // Load and render email templates
         const submissionTime = new Date().toLocaleString('en-US', { 
@@ -183,11 +218,27 @@ app.post('/api/contact', emailLimiter, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Email sending failed:', error);
+        console.error('❌ Email sending failed:', {
+            message: error.message,
+            code: error.code,
+            command: error.command,
+            stack: error.stack
+        });
+        
+        // Provide different error messages based on the error type
+        let errorMessage = 'Sorry, there was an error sending your message. Please try again or email me directly at abhishek.dev694@gmail.com';
+        
+        if (error.code === 'ETIMEDOUT') {
+            errorMessage = 'Connection timeout occurred. Please try again in a moment or email me directly at abhishek.dev694@gmail.com';
+        } else if (error.code === 'EAUTH') {
+            errorMessage = 'Email authentication failed. Please email me directly at abhishek.dev694@gmail.com';
+        } else if (error.message.includes('Email configuration incomplete')) {
+            errorMessage = 'Email system is currently being configured. Please email me directly at abhishek.dev694@gmail.com';
+        }
         
         res.status(500).json({
             success: false,
-            message: 'Sorry, there was an error sending your message. Please try again or email me directly at abhishek.dev694@gmail.com'
+            message: errorMessage
         });
     }
 });
@@ -211,17 +262,32 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const emailConfigured = !!process.env.EMAIL_PASSWORD;
+    
     console.log(`
 🚀 Portfolio API Server Started!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📧 Email: abhishek.dev694@gmail.com
-🌐 Server: http://localhost:${PORT}
-🔗 Health: http://localhost:${PORT}/api/health
-📝 Contact: http://localhost:${PORT}/api/contact
+🌐 Server: ${isProduction ? 'PRODUCTION' : `http://localhost:${PORT}`}
+🔗 Health: ${isProduction ? 'https://your-railway-url.railway.app' : `http://localhost:${PORT}`}/api/health
+📝 Contact: ${isProduction ? 'https://your-railway-url.railway.app' : `http://localhost:${PORT}`}/api/contact
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Environment: ${process.env.NODE_ENV || 'development'}
 Email Service: ${process.env.EMAIL_SERVICE || 'gmail'}
+Trust Proxy: ${app.get('trust proxy') ? 'ENABLED ✅' : 'DISABLED ❌'}
+Email Config: ${emailConfigured ? 'CONFIGURED ✅' : 'MISSING PASSWORD ❌'}
+Port: ${PORT}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     `);
+    
+    // Additional production warnings
+    if (isProduction) {
+        console.log('🔥 PRODUCTION MODE - Railway Deployment');
+        if (!emailConfigured) {
+            console.log('⚠️  WARNING: EMAIL_PASSWORD not configured in Railway environment variables!');
+        }
+    }
 });
 
 // Graceful shutdown
