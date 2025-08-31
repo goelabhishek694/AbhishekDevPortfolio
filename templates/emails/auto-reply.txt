@@ -1,0 +1,25 @@
+Hi {{CLIENT_NAME}},
+
+Thank you for your interest in my freelance web development services! I've received your message and I'm excited about the possibility of working together.
+
+WHAT HAPPENS NEXT?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• I'll review your project details carefully  
+• Get back to you within 24 hours (usually much faster!)
+• We can schedule a call to discuss your vision
+• I'll provide a detailed proposal and timeline
+
+ABOUT MY SERVICES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+With 3+ years of experience at Fynd (Reliance) building scalable e-commerce solutions, I specialize in creating responsive, modern websites that drive real business results for clients across USA & Canada.
+
+In the meantime, feel free to check out more of my work on my website or connect with me on LinkedIn.
+
+Feel free to reply to this email if you have any additional questions.
+
+Best regards,
+Abhishek Goel
+Freelance Web Developer
+
+🔗 LinkedIn: https://linkedin.com/in/goelabhishek694
+🔗 GitHub: http://github.com/goelabhishek694/

@@ -1,0 +1,31 @@
+<div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 10px;">
+    <div style="background: linear-gradient(135deg, #6366f1, #4f46e5); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">🚀 New Project Inquiry!</h1>
+    </div>
+    
+    <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h2 style="color: #1f2937; margin-top: 0;">New Contact from Portfolio Website</h2>
+        
+        <div style="margin: 20px 0; padding: 15px; background: #f1f5f9; border-radius: 8px; border-left: 4px solid #6366f1;">
+            <h3 style="color: #6366f1; margin: 0 0 10px 0;">Client Details</h3>
+            <p><strong>Name:</strong> {{CLIENT_NAME}}</p>
+            <p><strong>Email:</strong> <a href="mailto:{{CLIENT_EMAIL}}" style="color: #6366f1;">{{CLIENT_EMAIL}}</a></p>
+            <p><strong>Budget Range:</strong> {{CLIENT_BUDGET}}</p>
+        </div>
+        
+        <div style="margin: 20px 0; padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+            <h3 style="color: #0ea5e9; margin: 0 0 10px 0;">Project Details</h3>
+            <p style="white-space: pre-wrap; line-height: 1.6;">{{CLIENT_MESSAGE}}</p>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
+            <h4 style="color: #059669; margin: 0 0 10px 0;">💡 Quick Actions</h4>
+            <p style="margin: 5px 0;"><strong>Reply:</strong> <a href="mailto:{{CLIENT_EMAIL}}?subject=Re: Project Inquiry from {{CLIENT_NAME}}" style="color: #059669;">Send Reply</a></p>
+            <p style="margin: 5px 0;"><strong>Time:</strong> {{SUBMISSION_TIME}}</p>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 14px;">
+        <p>This email was sent from your portfolio website contact form.</p>
+    </div>
+</div>

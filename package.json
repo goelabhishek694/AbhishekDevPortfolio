@@ -1,0 +1,52 @@
+{
+  "name": "abhishek-portfolio",
+  "version": "1.0.0",
+  "description": "Freelance web developer portfolio with contact form functionality",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "client": "python -m http.server 8000",
+    "build": "node deploy.js --production",
+    "test": "curl http://localhost:3000/api/health",
+    "deploy:check": "node deploy.js",
+    "deploy:backend": "echo 'Deploy to Railway: Visit https://railway.app and connect this repository'",
+    "deploy:frontend": "echo 'Deploy to Netlify: Visit https://netlify.com and deploy the build/ folder'",
+    "setup": "echo 'Please create .env file and add your Gmail App Password'",
+    "help": "echo 'Local: npm start + npm run client | Deploy: npm run build then follow deployment guide'"
+  },
+  "keywords": [
+    "portfolio",
+    "freelance",
+    "web-developer",
+    "nodejs",
+    "express",
+    "contact-form"
+  ],
+  "author": "Abhishek Goel <abhishek.dev694@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abhishekgoel/portfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/abhishekgoel/portfolio/issues"
+  },
+  "homepage": "https://abhishekgoel.dev"
+}

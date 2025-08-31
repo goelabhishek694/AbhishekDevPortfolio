@@ -1,0 +1,17 @@
+NEW CONTACT FORM SUBMISSION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 CLIENT DETAILS:
+Name: {{CLIENT_NAME}}
+Email: {{CLIENT_EMAIL}}
+Budget: {{CLIENT_BUDGET}}
+
+💬 PROJECT MESSAGE:
+{{CLIENT_MESSAGE}}
+
+📅 SUBMISSION TIME:
+{{SUBMISSION_TIME}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 This email was sent from your portfolio contact form.
+Reply directly to this email to respond to the client.
