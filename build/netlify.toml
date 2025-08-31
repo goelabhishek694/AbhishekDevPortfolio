@@ -21,7 +21,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://your-portfolio-api.railway.app/api/:splat"
+  to = "https://abhishekdevportfolio-production.up.railway.app"
   status = 200
   force = true
 
