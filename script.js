@@ -247,7 +247,7 @@ function initFormHandling() {
             // Auto-detect API endpoint based on environment
             const API_BASE = window.location.hostname === 'localhost' 
                 ? 'http://localhost:3000' 
-                : 'https://your-portfolio-api.railway.app';
+                : 'https://abhishekdevportfolio-production.up.railway.app';
             
             // Send to backend API
             const response = await fetch(`${API_BASE}/api/contact`, {

@@ -52,8 +52,7 @@ app.use(cors({
         'http://localhost:8000', 
         'http://127.0.0.1:8000', 
         'https://abhishekgoel.dev',
-        'https://abhishek-portfolio.netlify.app',
-        'https://your-portfolio-site.netlify.app'
+        'https://getsoftware.netlify.app/'
     ],
     credentials: true
 }));
