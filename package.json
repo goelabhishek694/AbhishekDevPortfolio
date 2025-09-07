@@ -26,13 +26,14 @@
   "author": "Abhishek Goel <abhishek.dev694@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "nodemailer": "^6.9.7",
+    "@sendgrid/mail": "^8.1.5",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "helmet": "^7.1.0",
+    "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
-    "body-parser": "^1.20.2"
+    "helmet": "^7.1.0",
+    "nodemailer": "^6.9.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

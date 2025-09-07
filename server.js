@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_EMAIL_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,51 +64,6 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Email configuration with improved error handling
-const createTransporter = () => {
-    const emailUser = process.env.EMAIL_USER || 'abhishek.dev694@gmail.com';
-    const emailPassword = process.env.EMAIL_PASSWORD;
-    
-    if (!emailPassword) {
-        console.error('❌ EMAIL_PASSWORD environment variable is missing!');
-        throw new Error('Email configuration incomplete');
-    }
-
-    // Enhanced Gmail configuration for production
-    if (process.env.EMAIL_SERVICE === 'gmail') {
-        return nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: emailUser,
-                pass: emailPassword
-            },
-            // Production-friendly timeout settings
-            connectionTimeout: 60000, // 60 seconds
-            greetingTimeout: 30000,   // 30 seconds
-            socketTimeout: 60000,     // 60 seconds
-        });
-    } else {
-        // Enhanced SMTP configuration for production
-        return nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            port: parseInt(process.env.SMTP_PORT) || 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: emailUser,
-                pass: emailPassword
-            },
-            // Production-friendly settings
-            connectionTimeout: 60000,
-            greetingTimeout: 30000,
-            socketTimeout: 60000,
-            // Additional settings for better reliability
-            pool: true,
-            maxConnections: 5,
-            maxMessages: 100,
-        });
-    }
-};
-
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ 
@@ -140,21 +97,6 @@ app.post('/api/contact', emailLimiter, async (req, res) => {
 
         // Create transporter with error handling
         console.log('🔧 Creating email transporter...');
-        const transporter = createTransporter();
-
-        // Verify transporter configuration with detailed logging
-        console.log('🔍 Verifying SMTP connection...');
-        try {
-            await transporter.verify();
-            console.log('✅ SMTP connection verified successfully');
-        } catch (verifyError) {
-            console.error('❌ SMTP verification failed:', {
-                message: verifyError.message,
-                code: verifyError.code,
-                command: verifyError.command
-            });
-            throw verifyError;
-        }
 
         // Load and render email templates
         const submissionTime = new Date().toLocaleString('en-US', { 
@@ -207,8 +149,8 @@ app.post('/api/contact', emailLimiter, async (req, res) => {
         };
 
         // Send both emails
-        await transporter.sendMail(clientMailOptions);
-        await transporter.sendMail(autoReplyOptions);
+        await sgMail.send(clientMailOptions);
+        await sgMail.send(autoReplyOptions);
 
         console.log(`✅ Email sent successfully from ${name} (${email}) at ${new Date().toISOString()}`);
 
@@ -270,8 +212,8 @@ app.listen(PORT, () => {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📧 Email: abhishek.dev694@gmail.com
 🌐 Server: ${isProduction ? 'PRODUCTION' : `http://localhost:${PORT}`}
-🔗 Health: ${isProduction ? 'https://abhishekdevportfolio-production.up.railway.app' : `http://localhost:${PORT}`}/api/health
-📝 Contact: ${isProduction ? 'https://abhishekdevportfolio-production.up.railway.app' : `http://localhost:${PORT}`}/api/contact
+🔗 Health: ${isProduction ? 'https://your-railway-url.railway.app' : `http://localhost:${PORT}`}/api/health
+📝 Contact: ${isProduction ? 'https://your-railway-url.railway.app' : `http://localhost:${PORT}`}/api/contact
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Environment: ${process.env.NODE_ENV || 'development'}
 Email Service: ${process.env.EMAIL_SERVICE || 'gmail'}
